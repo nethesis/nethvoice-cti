@@ -88,7 +88,9 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
     const showCustomerCardButton =
       !!profile?.macro_permissions?.customer_card?.value &&
       !!(contact?.workphone || contact?.homephone || contact?.cellphone)
-    const showLastCalls = !!profile?.macro_permissions?.cdr?.permissions?.ad_cdr?.value
+    const showLastCalls =
+      !!profile?.macro_permissions?.cdr?.value &&
+      !!profile?.macro_permissions?.cdr?.permissions?.ad_cdr?.value
 
     //Get sideDrawer status from store
     const sideDrawer = useSelector((state: RootState) => state.sideDrawer)

@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
 import { isEmpty } from 'lodash'
 import { CountdownTimer } from '../Countdown'
+import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 import classNames from 'classnames'
 
 export interface ParkCardsProps extends ComponentProps<'div'> {}
@@ -128,7 +129,11 @@ export const ParkCards: FC<ParkCardsProps> = ({ className }): JSX.Element => {
               >
                 <Button
                   variant='white'
-                  className='tooltip-parking-button w-full relative overflow-hidden'
+                  className='w-full relative overflow-hidden'
+                  data-tooltip-id='tooltip-parking-button'
+                  data-tooltip-content={
+                    t('Parks.Click and hold to take current parking in call') || ''
+                  }
                 >
                   {/* Content stays static; the green progress runs underneath */}
                   <div className='relative z-10 flex items-center justify-center w-full'>
@@ -175,6 +180,7 @@ export const ParkCards: FC<ParkCardsProps> = ({ className }): JSX.Element => {
           cards={parkCardsData.map((card: any) => card?.content)}
           numberOfParkingNotEmpty={parkingInfo.notEmptyParking}
         />
+        <CustomThemedTooltip id='tooltip-parking-button' place='top' />
       </div>
     </>
   )

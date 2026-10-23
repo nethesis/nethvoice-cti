@@ -49,7 +49,8 @@ export const IncomingCalls = () => {
   const dispatch = useDispatch()
 
   const hasDndPermission = Boolean(
-    userStore?.profile?.macro_permissions?.settings?.permissions?.dnd?.value,
+    userStore?.profile?.macro_permissions?.settings?.value &&
+      userStore?.profile?.macro_permissions?.settings?.permissions?.dnd?.value,
   )
 
   const updateAutoDndSetting = async (
@@ -206,7 +207,7 @@ export const IncomingCalls = () => {
         savePreference('incomingCallTrigger', triggerValue, authStore.username)
       } catch (error) {
         console.error('Error loading parameter URL:', error)
-        setParamUrlError('Cannot retrieve URL configuration')
+        setParamUrlError(t('Settings.Cannot retrieve URL configuration') || '')
 
         // Use default example and saved preferences as fallback
         const savedUrl = loadPreference('incomingCallUrl', authStore.username) || defaultExampleUrl
@@ -725,7 +726,7 @@ export const IncomingCalls = () => {
                 </div>
               </div>
 
-              {/* Never option - also disabled when URL is not available */}
+              {/* Never option */}
               <div className='flex items-start'>
                 <div className='flex h-5 items-center'>
                   <input
@@ -734,18 +735,13 @@ export const IncomingCalls = () => {
                     type='radio'
                     checked={urlTrigger === TRIGGER_NEVER}
                     onChange={handleTriggerChange}
-                    className={`h-4 w-4 border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark ${
-                      !incomingCallStore.isUrlAvailable ? 'opacity-50 cursor-not-allowed' : ''
-                    }`}
-                    disabled={!incomingCallStore.isUrlAvailable}
+                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                   />
                 </div>
                 <div className='ml-3 text-sm'>
                   <label
                     htmlFor={TRIGGER_NEVER}
-                    className={`font-normal text-secondaryNeutral dark:text-secondaryNeutralDark ${
-                      !incomingCallStore.isUrlAvailable ? 'opacity-50 cursor-not-allowed' : ''
-                    }`}
+                    className='font-normal text-secondaryNeutral dark:text-secondaryNeutralDark'
                   >
                     {t('Settings.Never')}
                   </label>
@@ -772,7 +768,7 @@ export const IncomingCalls = () => {
                     onChange={(event) =>
                       updateAutoDndSetting('auto_dndoff_login', event.target.checked)
                     }
-                    className='h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-600'
+                    className='h-4 w-4 rounded border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                   />
                 </div>
                 <div className='ml-3 text-sm leading-6'>
@@ -800,7 +796,7 @@ export const IncomingCalls = () => {
                     onChange={(event) =>
                       updateAutoDndSetting('auto_dndon_logout', event.target.checked)
                     }
-                    className='h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-600'
+                    className='h-4 w-4 rounded border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                   />
                 </div>
                 <div className='ml-3 text-sm leading-6'>

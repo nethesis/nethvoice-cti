@@ -324,7 +324,6 @@
     "This call has multiple interactions": "This call has multiple interactions",
     "Group call": "Group call",
     "Queue call": "Queue call",
-    "Queue": "Queue",
     "Group": "Group",
     "Outcome answered": "Answered",
     "Outcome missed": "Missed",
@@ -566,7 +565,17 @@
     "No WebRTC extension found": "No WebRTC extension found",
     "To enable Phone Island integration, ask your administrator to configure a WebRTC extension": "To enable Phone Island integration, ask your administrator to configure a Web phone",
     "Disable Do not disturb automatically": "Disable Do not disturb automatically",
-    "Enable Do not disturb automatically": "Enable Do not disturb automatically"
+    "Enable Do not disturb automatically": "Enable Do not disturb automatically",
+    "Error saving settings": "Error saving settings",
+    "No ringtones available": "No ringtones available",
+    "Error loading URL configuration": "Error loading URL configuration",
+    "Cannot retrieve URL configuration": "Cannot retrieve URL configuration",
+    "Error initializing 2FA setup": "Error initializing 2FA setup",
+    "Please enter your password": "Please enter your password",
+    "Invalid password, please try again": "Invalid password, please try again",
+    "No file selected": "No file selected",
+    "Could not load recorded file": "Could not load recorded file",
+    "Announcement details": "Announcement details"
   },
   "TopBar": {
     "Signed in as": "Signed in as",
@@ -726,7 +735,8 @@
     "Wait": "Wait",
     "Position": "Position",
     "You are about to logout from the following queues": "You are about to logout from the following queues",
-    "Filter calls": "Filter calls"
+    "Filter calls": "Filter calls",
+    "lines": "lines"
   },
   "Lines": {
     "No lines found": "No lines found",
@@ -770,9 +780,9 @@
     "Announcement": "Announcement",
     "Drag and drop or click to upload": "Drag and drop or click to upload",
     "or click and drag here": "or click and drag here",
-    "Record now": "Registra ora",
-    "Activation": "Attivazione",
-    "Typology": "Tipologia",
+    "Record now": "Record now",
+    "Activation": "Activation",
+    "Typology": "Typology",
     "Add rule": "Add rule",
     "Rule name": "Rule name",
     "Activate rule": "Activate rule",
@@ -828,7 +838,14 @@
     "Select date end": "Select date end",
     "Newest": "Newest",
     "Oldest": "Oldest",
-    "Save recording": "Save recording"
+    "Save recording": "Save recording",
+    "Cannot retrieve lines": "Cannot retrieve lines",
+    "Cannot retrieve announcement": "Cannot retrieve announcements",
+    "Insert number": "Insert number",
+    "Open announcement menu": "Open announcement menu",
+    "Activate announcement + voicemail": "Activate announcement + voicemail",
+    "Activate announcement": "Activate announcement",
+    "Activate forward": "Activate forward"
   },
   "SpeedDial": {
     "Create": "Create",
@@ -1060,7 +1077,8 @@
     "Total not managed": "Total not managed",
     "No queue selected": "No queue selected",
     "No operators": "No operators",
-    "No agents": "No agents"
+    "No agents": "No agents",
+    "Answered": "Answered"
   },
   "CustomerCards": {
     "Customer data": "Customer data",

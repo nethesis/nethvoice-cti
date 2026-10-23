@@ -96,7 +96,14 @@
     "Remove": "Rimuovi",
     "Page of": "Pagina {{current}} di {{total}}",
     "Optional": "Opzionale",
-    "Chat": "Chat"
+    "Chat": "Chat",
+    "Click to redirect": "Clicca per essere reindirizzato",
+    "DD/MM/YYYY": "GG/MM/AAAA",
+    "DoubleLogin": "Login duplicato",
+    "Session expired": "Sessione scaduta",
+    "SessionExpired": "Sessione scaduta",
+    "User login duplicated": "Login utente duplicato",
+    "You have made login in another tab": "Hai effettuato il login in un'altra scheda"
   },
   "Login": {
     "User": "Utente",
@@ -117,7 +124,8 @@
     "OTP verification failed": "Verifica OTP fallita",
     "The code you entered is invalid or has expired. Please check your authenticator app and try again.": "Il codice inserito non è valido o è scaduto. Controlla la tua app di autenticazione e riprova.",
     "Enable 2FA to improve account security": "Abilita 2FA per migliorare la sicurezza dell'account",
-    "Two-factor authentication is disabled": "L'autenticazione a due fattori è disabilitata"
+    "Two-factor authentication is disabled": "L'autenticazione a due fattori è disabilitata",
+    "Session expired, log in again": "Sessione scaduta, effettua di nuovo il login"
   },
   "Phonebook": {
     "No contacts found": "Nessun contatto trovato",
@@ -306,7 +314,6 @@
     "This call has multiple interactions": "Questa chiamata ha più interazioni",
     "Group call": "Chiamata di gruppo",
     "Queue call": "Chiamata di coda",
-    "Queue": "Coda",
     "Group": "Gruppo",
     "Outcome answered": "Risposta",
     "Outcome missed": "Non risposta",
@@ -314,7 +321,8 @@
     "Collapse interactions": "Comprimi interazioni",
     "Voicemail available": "Apri il messaggio vocale",
     "Named group call": "Gruppo: {{name}}",
-    "Named queue call": "Coda: {{name}}"
+    "Named queue call": "Coda: {{name}}",
+    "to": "a"
   },
   "Operators": {
     "No operators found": "Nessun operatore trovato",
@@ -548,7 +556,18 @@
     "No WebRTC extension found": "Nessuna estensione WebRTC trovata",
     "To enable Phone Island integration, ask your administrator to configure a WebRTC extension": "Per abilitare l'integrazione della Phone Island, chiedi al tuo amministratore di abilitare il Web phone",
     "Disable Do not disturb automatically": "Disattiva automaticamente il Non disturbare",
-    "Enable Do not disturb automatically": "Attiva automaticamente il Non disturbare"
+    "Enable Do not disturb automatically": "Attiva automaticamente il Non disturbare",
+    "Error saving settings": "Errore durante il salvataggio delle impostazioni",
+    "No ringtones available": "Nessuna suoneria disponibile",
+    "Error loading URL configuration": "Errore nel caricamento della configurazione URL",
+    "Cannot retrieve URL configuration": "Impossibile recuperare la configurazione URL",
+    "Error initializing 2FA setup": "Errore durante l'inizializzazione della configurazione 2FA",
+    "Please enter your password": "Inserisci la tua password",
+    "Invalid password, please try again": "Password non valida, riprova",
+    "No file selected": "Nessun file selezionato",
+    "Could not load recorded file": "Impossibile caricare il file registrato",
+    "Announcement details": "Dettagli annuncio",
+    "Customer card show type": "Modalità di visualizzazione della scheda cliente"
   },
   "TopBar": {
     "Signed in as": "Accesso effettuato come",
@@ -563,8 +582,8 @@
     "Call forward": "Inoltro",
     "Enter phone number for call forward": "Inserisci il numero di telefono per l'inoltro di chiamata",
     "Presence": "Presence",
-    "Open user menu": "Open user menu",
-    "Open sidebar": "Open sidebar",
+    "Open user menu": "Apri menu utente",
+    "Open sidebar": "Apri barra laterale",
     "Main device": "Dispositivo principale",
     "Voicemail": "Voicemail",
     "Activate voicemail": "Attiva voicemail",
@@ -591,7 +610,10 @@
     "Toggle favorite operator": "Attiva/disattiva l'operatore preferito",
     "Set favorite operator": "Imposta operatore preferito",
     "Remove favorite operator": "Rimuovi operatore preferito",
-    "Pickup": "Intercetta"
+    "Pickup": "Intercetta",
+    "Start recording": "Avvia registrazione",
+    "Stop recording": "Ferma registrazione",
+    "Restart recording": "Riprendi registrazione"
   },
   "Lines": {
     "No lines found": "Nessuna linea trovata",
@@ -615,7 +637,7 @@
     "Select period": "Seleziona periodo",
     "Begin": "Inizio",
     "End": "Fine",
-    "Only for a day": "Solo per per un giorno",
+    "Only for a day": "Solo per un giorno",
     "Active every day": "Attivo tutti i giorni",
     "Active 24h": "Attivo 24h",
     "Activate forward": "Attiva inoltro",
@@ -636,7 +658,7 @@
     "Private": "Privato",
     "Announcement": "Annuncio",
     "Drag and drop or click to upload": "Trascina qui o clicca per caricare",
-    "or click and drag here": "o clicca e trascina quì",
+    "or click and drag here": "o clicca e trascina qui",
     "Record now": "Registra ora",
     "Activation": "Attivazione",
     "Typology": "Tipologia",
@@ -697,7 +719,12 @@
     "Select date end": "Seleziona data fine",
     "Newest": "Più recenti",
     "Oldest": "Meno recenti",
-    "Save recording": "Salva registrazione"
+    "Save recording": "Salva registrazione",
+    "Cannot retrieve lines": "Impossibile recuperare le linee",
+    "Cannot retrieve announcement": "Impossibile recuperare gli annunci",
+    "Insert number": "Inserisci numero",
+    "Open announcement menu": "Apri menu annuncio",
+    "Activate announcement + voicemail": "Attiva annuncio + casella vocale"
   },
   "SpeedDial": {
     "Create": "Crea",
@@ -724,7 +751,13 @@
     "Name (A-Z)": "Nome (A-Z)",
     "Name (Z-A)": "Nome (Z-A)",
     "Number (ascending)": "Numero (crescente)",
-    "Number (descending)": "Numero (decrescente)"
+    "Number (descending)": "Numero (decrescente)",
+    "Edit speed dial": "Modifica chiamata rapida",
+    "Save speed dial": "Salva chiamata rapida",
+    "Speed dial created": "Chiamata rapida creata",
+    "Speed dial creation message": "Hai appena creato una nuova chiamata rapida: {{extensionWaiting}}",
+    "Speed dial edited": "Chiamata rapida modificata",
+    "Speed dial edit message": "Hai appena modificato una chiamata rapida: {{extensionWaiting}}"
   },
   "LastCalls": {
     "No incoming calls": "Nessuna chiamata in entrata",
@@ -880,7 +913,8 @@
     "outcome_ENTERQUEUE": "In coda",
     "Operator": "Operatore",
     "Filter calls": "Filtra chiamate",
-    "Filter queues": "Filtra code"
+    "Filter queues": "Filtra code",
+    "lines": "linee"
   },
   "Tooltip": {
     "Hangup": "Chiudi",
@@ -928,13 +962,9 @@
     "There is no operator configured": "Non è configurato nessun operatore",
     "Dashboard": "Dashboard",
     "Queues management": "Gestione code",
-    "Gestione code": "Gestione code",
-    "Gestione clienti": "Gestione clienti",
     "Not managed calls": "Chiamate non gestite",
     "Live": "In tempo reale",
-    "In tempo reale": "In tempo reale",
     "Summary": "Statistiche",
-    "Statistiche": "Statistiche",
     "Monitor": "Monitor",
     "Queue manager": "Gestore code",
     "Alarms": "Allarmi",
@@ -1011,7 +1041,6 @@
     "Average": "Medio",
     "Customers management": "Gestione clienti",
     "Not managed customers": "Clienti non gestiti",
-    "Clienti non gestiti": "Clienti non gestiti",
     "Before 60s": "Prima dei 60s",
     "After 60s": "Dopo 60s",
     "Failed calls": "Chiamate fallite",
@@ -1051,7 +1080,7 @@
     "Recall time": "Tempo di richiamata",
     "Time in queue": "Tempo in coda",
     "Time in break": "Tempo in pausa",
-    "Pause on logon": "Pause on logon",
+    "Pause on logon": "Pausa all'accesso",
     "Average recall time": "Tempo medio di richiamata",
     "Waiting times": "Tempo in attesa",
     "SummaryTotalCallChartDescription": "Numero di chiamate immesse per ogni coda e percentuale sul totale delle chiamate",
@@ -1074,7 +1103,8 @@
     "Total not managed": "Totale non gestiti",
     "No queue selected": "Nessuna coda selezionata",
     "No operators": "Nessun operatore",
-    "No agents": "Nessun agente"
+    "No agents": "Nessun agente",
+    "Answered": "Risposta"
   },
   "CustomerCards": {
     "Customer data": "Informazioni cliente",

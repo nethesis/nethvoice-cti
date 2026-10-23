@@ -22,6 +22,7 @@ import {
 import { store } from '../../store'
 import {
   buildOperators,
+  getMainExtensionNumber,
   retrieveAvatars,
   retrieveExtensions,
   retrieveFavoriteOperators,
@@ -50,7 +51,6 @@ import { useTranslation } from 'react-i18next'
 import Toast from '../common/Toast'
 import { getCustomerCardsList, setUserSettings } from '../../lib/customerCard'
 import { retrieveParksList } from '../../lib/park'
-import { Tooltip } from 'react-tooltip'
 import { getJSONItem, loadPreference, savePreference, setJSONItem } from '../../lib/storage'
 import { eventDispatch } from '../../lib/hooks/eventDispatch'
 import { setMainDevice, getFeatureCodes } from '../../lib/devices'
@@ -827,7 +827,10 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         let callerUsername = callerInfo?.username
         let callerAvatar = operatorsStore.avatars[callerUsername]
         let notificationObject: any = {
-          number: data[currentUsername]?.conversations[firstElementConversation]?.counterpartNum,
+          number: getMainExtensionNumber(
+            data[currentUsername]?.conversations[firstElementConversation]?.counterpartNum,
+            operatorsStore?.operators,
+          ),
           name: data[currentUsername]?.conversations[firstElementConversation]?.counterpartName,
           avatar: callerAvatar || '',
         }
@@ -1268,11 +1271,19 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   }
 
   const parkingInfo = useSelector((state: RootState) => state.park)
+  const hasParkingsPermission =
+    !!profile?.macro_permissions?.settings?.value &&
+    !!profile?.macro_permissions?.settings?.permissions?.parkings?.value
+  const showParkingFooter =
+    !!parkingInfo?.isParkingFooterVisible &&
+    hasParkingsPermission &&
+    !!userInformation?.default_device &&
+    userInformation?.default_device?.type !== 'nethlink'
   const parkingsRefreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const parkingsRefreshInFlightRef = useRef(false)
 
   const scheduleParksRefresh = () => {
-    if (!profile?.macro_permissions?.settings?.permissions?.parkings?.value) {
+    if (!hasParkingsPermission) {
       return
     }
 
@@ -1318,7 +1329,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
 
     scheduleParksRefresh()
-  }, [firstRenderPark, profile?.macro_permissions?.settings?.permissions?.parkings?.value])
+  }, [firstRenderPark, hasParkingsPermission])
 
   const controls = useAnimation()
 
@@ -1649,12 +1660,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           {/* Main content */}
           <div className='flex flex-1 items-stretch overflow-hidden bg-body dark:bg-bodyDark'>
             <main
-              className={`flex-1 ${customScrollbarClass} ${
-                parkingInfo?.isParkingFooterVisible &&
-                profile?.macro_permissions?.settings?.permissions?.parkings?.value
-                  ? 'pb-16'
-                  : ''
-              }`}
+              className={`flex-1 ${customScrollbarClass} ${showParkingFooter ? 'pb-16' : ''}`}
               id='main-content'
             >
               {/* Primary column */}
@@ -1696,19 +1702,13 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
               )}
             </div>
 
-            {parkingInfo?.isParkingFooterVisible &&
-            profile?.macro_permissions?.settings?.permissions?.parkings?.value &&
-            userInformation?.default_device &&
-            userInformation?.default_device?.type !== 'nethlink' ? (
+            {showParkingFooter ? (
               <motion.div
-                className='absolute bottom-0 left:0 sm:bottom-0 sm:left-0 md:bottom-0 md:left-20'
+                className='absolute bottom-0 left-0 md:left-20'
                 initial={{ y: 100 }}
                 animate={controls}
               >
                 <ParkCards />
-                <Tooltip anchorSelect='.tooltip-parking-button' className='relative z-30'>
-                  {t('Parks.Click and hold to take current parking in call')}
-                </Tooltip>
               </motion.div>
             ) : (
               <></>

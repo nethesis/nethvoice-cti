@@ -175,9 +175,7 @@ export const Setup2FA = () => {
         }
       }
     } catch (error) {
-      setError(
-        t('Settings.Invalid password. Please try again.') || 'Invalid password. Please try again.',
-      )
+      setError(t('Settings.Invalid password, please try again') || '')
     } finally {
       setIsProcessing(false)
     }
