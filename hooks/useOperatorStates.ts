@@ -15,7 +15,8 @@ export const useOperatorStates = (operator: any, authUsername: string) => {
   )
   const hangupPermission = useSelector(
     (state: RootState) =>
-      state.user?.profile?.macro_permissions?.presence_panel?.permissions?.hangup?.value,
+      !!state.user?.profile?.macro_permissions?.presence_panel?.value &&
+      !!state.user?.profile?.macro_permissions?.presence_panel?.permissions?.hangup?.value,
   )
 
   const permissions = useMemo(

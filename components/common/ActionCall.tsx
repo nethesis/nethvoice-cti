@@ -248,26 +248,29 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
           </Dropdown.Item>
         )}
 
-      {profile?.profile?.macro_permissions?.presence_panel?.permissions?.hangup?.value && (
-        <Dropdown.Item
-          icon={faPhone}
-          iconClassName='transform rotate-[135deg]'
-          onClick={actions.hangup}
-        >
-          {operators?.operators[config?.username]?.mainPresence !== 'ringing'
-            ? t('OperatorDrawer.Hangup')
-            : t('Common.Reject')}
-        </Dropdown.Item>
-      )}
+      {profile?.profile?.macro_permissions?.presence_panel?.value &&
+        profile?.profile?.macro_permissions?.presence_panel?.permissions?.hangup?.value && (
+          <Dropdown.Item
+            icon={faPhone}
+            iconClassName='transform rotate-[135deg]'
+            onClick={actions.hangup}
+          >
+            {operators?.operators[config?.username]?.mainPresence !== 'ringing'
+              ? t('OperatorDrawer.Hangup')
+              : t('Common.Reject')}
+          </Dropdown.Item>
+        )}
 
-      {profile?.profile?.macro_permissions?.settings?.permissions?.spy?.value &&
+      {profile?.profile?.macro_permissions?.settings?.value &&
+        profile?.profile?.macro_permissions?.settings?.permissions?.spy?.value &&
         operators?.operators[config?.username]?.mainPresence !== 'ringing' && (
           <Dropdown.Item icon={faEarListen} onClick={actions.listen}>
             {t('OperatorDrawer.Listen')}
           </Dropdown.Item>
         )}
 
-      {profile?.profile?.macro_permissions?.settings?.permissions?.intrude?.value &&
+      {profile?.profile?.macro_permissions?.settings?.value &&
+        profile?.profile?.macro_permissions?.settings?.permissions?.intrude?.value &&
         operators?.operators[config?.username]?.mainPresence !== 'ringing' && (
           <Dropdown.Item icon={faHandPointUp} onClick={actions.intrude}>
             {t('OperatorDrawer.Intrude')}
@@ -282,7 +285,8 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
           </Dropdown.Item>
         )}
 
-      {profile?.profile?.macro_permissions?.presence_panel?.permissions?.ad_recording?.value &&
+      {profile?.profile?.macro_permissions?.presence_panel?.value &&
+        profile?.profile?.macro_permissions?.presence_panel?.permissions?.ad_recording?.value &&
         operators?.operators[config?.username]?.mainPresence !== 'ringing' && (
           <Dropdown.Item icon={getRecordingIcon()} onClick={actions.toggleRecord}>
             {getRecordingText()}
