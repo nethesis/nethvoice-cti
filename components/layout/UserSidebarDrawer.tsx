@@ -19,7 +19,8 @@ export const UserSidebarDrawer: FC<UserSidebarDrawerProps> = ({ isShown }) => {
 
   return (
     <>
-      <Transition show={isShown} as={Fragment}>
+      {/* The chat has its own panel (ChatPanel) */}
+      <Transition show={isShown && rightSideStatus?.actualTab !== 'chat'} as={Fragment}>
         <Dialog
           as='div'
           className={`${rightSideStatus.isShown ? 'relative z-20 lg:hidden' : 'hidden'}`}
