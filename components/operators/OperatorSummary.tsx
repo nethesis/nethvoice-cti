@@ -217,7 +217,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
           ) : (
             <ButtonDropdown operatorDevices={operatorDevices} operator={operator}></ButtonDropdown>
           )}
-          {user?.default_device?.type === 'webrtc' &&
+          {['webrtc', 'nethlink'].includes(user?.default_device?.type) &&
             isOperatorVideoCallable(operator, auth?.username) && (
               <Button
                 variant='ghost'

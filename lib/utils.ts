@@ -132,6 +132,11 @@ export function callPhoneNumber(phoneNumber: string, options: { video?: boolean 
       ...(options.video ? { video: true } : {}),
     })
   } else if (default_device?.type === 'nethlink' || hasNethlinkExtension) {
+    // callto:// is audio only: NethLink starts a video call on its own link
+    if (options.video) {
+      window.location.href = `nethlink://video?to=${encodeURIComponent(phoneNumber)}`
+      return
+    }
     console.log('Attempting callto://', phoneNumber)
 
     let hasBlurred = false
