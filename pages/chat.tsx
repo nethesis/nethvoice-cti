@@ -336,22 +336,29 @@ const Chat: NextPage = () => {
         {t('Chat.Conversations')}
       </h1>
       <div className='flex items-center justify-between gap-4 mb-6'>
-        <div>
+        <div className='min-w-0 flex-1'>
           <TextInput
             placeholder={t('Chat.Search') || ''}
-            className='max-w-xs sm:min-w-[20rem]'
+            className='max-w-xs'
             icon={faMagnifyingGlass}
             value={query}
             onChange={(e: any) => (setQuery(e.target.value), setPage(1))}
           />
         </div>
-        <div className='flex items-center gap-3'>
+        <div className='flex shrink-0 items-center gap-3'>
           {status !== 'online' && (
-            <span className='text-sm text-gray-500 dark:text-gray-400'>{t('Chat.Offline')}</span>
+            <span className='whitespace-nowrap text-sm text-gray-500 dark:text-gray-400'>
+              {t('Chat.Offline')}
+            </span>
           )}
-          <Button variant='primary' onClick={newChat} disabled={status !== 'online'}>
-            <FontAwesomeIcon icon={faNewChat} className='h-4 w-4 mr-2' />
-            {t('Chat.New chat')}
+          <Button
+            variant='primary'
+            className='whitespace-nowrap'
+            onClick={newChat}
+            disabled={status !== 'online'}
+          >
+            <FontAwesomeIcon icon={faNewChat} className='h-4 w-4 sm:mr-2' />
+            <span className='sr-only sm:not-sr-only'>{t('Chat.New chat')}</span>
           </Button>
         </div>
       </div>

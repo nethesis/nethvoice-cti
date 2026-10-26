@@ -250,9 +250,9 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                 {t('Phonebook.Phonebook filters')}
               </h2>
 
-              <div className='flex flex-col-reverse sm:flex-row justify-between sm:items-center'>
+              <div className='flex flex-col-reverse sm:flex-row justify-between sm:items-start sm:gap-4'>
                 {/* First container to manage text input and filter */}
-                <div className='flex items-center'>
+                <div className='flex flex-wrap items-center gap-x-4 gap-y-3 min-w-0'>
                   <div className='items-center'>
                     <TextInput
                       placeholder={t('Phonebook.Filter contacts') || ''}
@@ -266,7 +266,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     />
                   </div>
 
-                  <div className='flex ml-4'>
+                  <div className='flex'>
                     <PopoverGroup className='hidden sm:flex sm:items-baseline sm:space-x-4'>
                       <FilterPopover
                         name={t(`Phonebook.${contactTypeFilter.name}`)}
@@ -303,8 +303,12 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                 </div>
                 {/* Container for add announcement button  */}
                 {canCreateContact && (
-                  <div className='text-left pb-6 sm:pb-0'>
-                    <Button variant='primary' onClick={() => openCreateContactDrawer()}>
+                  <div className='text-left pb-6 sm:pb-0 shrink-0'>
+                    <Button
+                      variant='primary'
+                      className='whitespace-nowrap'
+                      onClick={() => openCreateContactDrawer()}
+                    >
                       <FontAwesomeIcon icon={faUserPlus} className='mr-2 h-4 w-4' />
                       <span>{t('Phonebook.Create contact')}</span>
                     </Button>
