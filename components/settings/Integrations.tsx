@@ -16,6 +16,8 @@ import {
 import { useTranslation } from 'react-i18next'
 import { getProductName } from '../../lib/utils'
 import CopyComponent from '../common/CopyComponent'
+import { ChatIslandIntegration } from './ChatIslandIntegration'
+import { useChatAllowed } from '../chat'
 
 export const Integrations = () => {
   const [config, setConfig] = useState<string>('')
@@ -27,6 +29,7 @@ export const Integrations = () => {
   const [loading, setLoading] = useState<boolean>(false)
   const [webrtcData, setWebrtcData]: any = useState([])
   const profile = useSelector((state: RootState) => state.user)
+  const chatAllowed = useChatAllowed()
 
   const { t } = useTranslation()
 
@@ -137,7 +140,7 @@ export const Integrations = () => {
     <>
       {/* The Integration section */}
       <section aria-labelledby='phone-configuration-heading'>
-        <div className='sm:overflow-hidden w-full'>
+        <div className='w-full'>
           <div className='pb-6 w-full'>
             <div>
               <h2 className='text-base font-medium leading-6 text-secondaryNeutral dark:text-secondaryNeutralDark mb-8'>
@@ -149,6 +152,11 @@ export const Integrations = () => {
               <InlineNotification type='info' title={t('Settings.No WebRTC extension found')}>
                 <p>{t('Settings.To enable Phone Island integration, ask your administrator to configure a WebRTC extension')}</p>
               </InlineNotification>
+            )}
+            {chatAllowed && (
+              <div className='mt-10'>
+                <ChatIslandIntegration />
+              </div>
             )}
           </div>
         </div>

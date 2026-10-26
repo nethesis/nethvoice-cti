@@ -64,6 +64,18 @@ export const removePhoneIslandToken = async () => {
   await removePersistentToken('phone-island')
 }
 
+export const getChatIslandToken = async () => {
+  return await createPersistentToken('chat-island')
+}
+
+export const chatIslandTokenCheck = async () => {
+  return await checkPersistentToken('chat-island')
+}
+
+export const removeChatIslandToken = async () => {
+  await removePersistentToken('chat-island')
+}
+
 /**
  * Generate a JWT token for QR code authentication
  *
