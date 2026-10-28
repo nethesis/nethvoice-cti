@@ -21,8 +21,9 @@ export const CallRecording: FC<CallRecordingProps> = ({
   summaryStatus,
 }) => {
   const hasRecording = call?.recordingfile
+  // 'failed' keeps the transcription when only the AI summary step failed
   const hasSummaryOrTranscription =
-    summaryStatus?.state === 'done' &&
+    (summaryStatus?.state === 'done' || summaryStatus?.state === 'failed') &&
     (summaryStatus?.has_summary || summaryStatus?.has_transcription)
   const showDropdown = hasRecording || hasSummaryOrTranscription
   const playTooltipId = `tooltip-play-recording-${call?.uniqueid}`

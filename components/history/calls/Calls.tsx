@@ -607,7 +607,10 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     const hasRecording = call?.recordingfile
     const hasSummary = summaryStatus?.has_summary
     const hasTranscription = summaryStatus?.has_transcription
-    const showSummaryActions = summaryStatus?.state === 'done' && (hasSummary || hasTranscription)
+    // 'failed' keeps the transcription when only the AI summary step failed
+    const showSummaryActions =
+      (summaryStatus?.state === 'done' || summaryStatus?.state === 'failed') &&
+      (hasSummary || hasTranscription)
 
     return (
       <>
@@ -1152,8 +1155,9 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
           )
         }
 
-        // Show clickable icon if state is 'done' and (has_summary or has_transcription)
-        if (state === 'done' && (has_summary || has_transcription)) {
+        // Show clickable icon if state is 'done' or 'failed' (the AI summary step can
+        // fail after the transcription is stored) and (has_summary or has_transcription)
+        if ((state === 'done' || state === 'failed') && (has_summary || has_transcription)) {
           const tooltipTitle = has_summary
             ? t('Common.View summary') || 'View summary'
             : t('Common.View transcription') || 'View transcription'
@@ -1180,7 +1184,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
           )
         }
 
-        // State is 'failed' or other states - don't show anything
+        // No content or other states - don't show anything
         return <div className='flex' />
       },
       width: '5%',
