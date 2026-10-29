@@ -16,6 +16,7 @@ export interface ChatConversation {
   owner?: boolean
   unread: number
   members?: string[]
+  guests?: Record<string, string> // people outside the PBX in the group: guest id -> their name there
   last?: { body: string; ts: number; mine: boolean; oob?: string; nick?: string }
   muted?: boolean
 }
