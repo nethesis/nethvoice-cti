@@ -108,6 +108,8 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
     })
   }, [queuesStore.queues, mainextension])
 
+  const hasQueuesData = queuesStore.isLoaded || !isEmpty(visibleQueues)
+
   const applyFilters = () => {
     setApplyingFilters(true)
 
@@ -404,7 +406,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
         />
         {/* login/logout and pause buttons */}
         <div className='flex flex-col md:items-end mb-3 shrink-0'>
-          {queuesStore.isLoaded && (
+          {hasQueuesData && (
             <div className='flex items-center'>
               {/* login / logout */}
               {isEmpty(getQueuesUserLoggedIn()) ? (
@@ -465,7 +467,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
 
       <div className='mx-auto text-center'>
         {/* no search results */}
-        {queuesStore.isLoaded && isEmpty(filteredQueues) && (
+        {hasQueuesData && isEmpty(filteredQueues) && (
           <EmptyState
             title={t('Queues.No queues found')}
             description={t('Common.Try changing your search filters') || ''}
@@ -479,7 +481,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
         )}
         <ul role='list' className='grid grid-cols-1 gap-6 xl:grid-cols-2 3xl:grid-cols-3'>
           {/* skeleton */}
-          {(!queuesStore.isLoaded || isApplyingFilters) &&
+          {(!hasQueuesData || isApplyingFilters) &&
             Array.from(Array(3)).map((e, i) => (
               <li
                 key={i}
@@ -496,7 +498,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
               </li>
             ))}
           {/* queues */}
-          {queuesStore.isLoaded &&
+          {hasQueuesData &&
             !isEmpty(filteredQueues) &&
             Object.keys(filteredQueues).map((key) => {
               const queue = filteredQueues[key]
