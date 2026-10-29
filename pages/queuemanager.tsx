@@ -154,7 +154,7 @@ const QueueManager: NextPage = () => {
                         )}
                         aria-current={item.current ? 'page' : undefined}
                       >
-                        {t(`QueueManager.${item.name}`)}
+                        {item.name}
                       </a>
                     ))}
                   </nav>
