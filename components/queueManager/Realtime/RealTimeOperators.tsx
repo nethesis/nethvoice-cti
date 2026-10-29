@@ -322,7 +322,7 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
                                                 className='h-4 w-4 mr-2'
                                                 aria-hidden='true'
                                               />
-                                              <span>{t('Queues.Login')}</span>
+                                              <span>{t('Queues.Login section title')}</span>
                                             </h3>
                                           </div>
                                           {/* divider */}
