@@ -73,6 +73,22 @@ export const ShowChatGroupDrawerContent = forwardRef<
         <Divider />
         <ul className='divide-y divide-gray-200 dark:divide-gray-700'>
           {members.map((u) => {
+            const guest = group?.guests?.[u]
+            if (guest !== undefined)
+              // Someone outside the PBX: a name in this group only, no presence, no operator's drawer.
+              return (
+                <li key={u} className='flex items-center gap-4 py-3'>
+                  <span className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200'>
+                    {(guest || '?').split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase()}
+                  </span>
+                  <div className='min-w-0 flex-1 font-medium text-gray-900 dark:text-gray-100 truncate'>
+                    {guest || t('Chat.External')}
+                  </div>
+                  <span className='shrink-0 rounded px-1.5 text-[0.625rem] leading-4 font-semibold uppercase tracking-wide bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-200'>
+                    {t('Chat.External')}
+                  </span>
+                </li>
+              )
             const op = operators?.[u]
             return (
               <li key={u}>

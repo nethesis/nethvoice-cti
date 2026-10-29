@@ -1380,6 +1380,7 @@
     "New message": "Nuovo messaggio",
     "Messages count": "{{count}} nuovi messaggi",
     "Reply": "Rispondi",
-    "{{count}} matches": "{{count}} risultati"
+    "{{count}} matches": "{{count}} risultati",
+    "External": "Esterno"
   }
 }
