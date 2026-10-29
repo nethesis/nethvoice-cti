@@ -108,7 +108,7 @@ const Queues: NextPage = () => {
             ></EmptyState>
           )}
           {/* tabs */}
-          {!queuesStore.errorMessage && queuesStore.isLoaded && !isEmpty(visibleQueues) && (
+          {!queuesStore.errorMessage && !isEmpty(visibleQueues) && (
             <>
               <div className='mb-6'>
                 {/* mobile tabs */}

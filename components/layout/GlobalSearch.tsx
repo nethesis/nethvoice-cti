@@ -400,7 +400,9 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                                       />
                                     </div>
                                     <span className='ml-2 flex-auto truncate'>
-                                      Call {result.phoneNumber}
+                                      {t('Common.Call phone number', {
+                                        number: result.phoneNumber,
+                                      })}
                                     </span>
                                   </>
                                 )}
@@ -415,7 +417,9 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                                       />
                                     </div>
                                     <span className='ml-2 flex-auto truncate'>
-                                      Add {result.phoneNumber} to phonebook
+                                      {t('Common.Add phone number to phonebook', {
+                                        number: result.phoneNumber,
+                                      })}
                                     </span>
                                   </>
                                 )}

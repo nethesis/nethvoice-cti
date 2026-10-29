@@ -127,7 +127,7 @@ export const AddToPhonebookDrawerContent = forwardRef<
 
   return (
     <>
-      <DrawerHeader title={`Add to phonebook: ${config}`} />
+      <DrawerHeader title={`${t('Common.Add to phonebook')}: ${config}`} />
       {/* drawer content */}
       <div className={classNames('p-5', className)} {...props}>
         <Divider />
@@ -141,13 +141,15 @@ export const AddToPhonebookDrawerContent = forwardRef<
               icon={faUserPlus}
               className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-400'
             />
-            <span>Create new contact</span>
+            <span>{t('Phonebook.Create contact')}</span>
           </Button>
         )}
-        <span className='flex text-sm font-medium mt-7'>Add to existing contact</span>
+        <span className='flex text-sm font-medium mt-7'>
+          {t('History.Add to existing contact')}
+        </span>
         <div className='mt-4'>
           <TextInput
-            placeholder={t('Type to search contact') || ""}
+            placeholder={t('History.Type to search contact') || ''}
             value={textFilter}
             onChange={changeTextFilter}
             ref={textFilterRef}
