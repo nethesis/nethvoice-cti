@@ -13,7 +13,6 @@ import {
   faPuzzlePiece,
   faVoicemail,
   faPhoneVolume,
-  faUserShield,
   faBell,
 } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
@@ -27,7 +26,7 @@ import { useRouter } from 'next/router'
 import { Theme } from '../components/settings/Theme'
 import { MobileApp } from '../components/settings/MobileApp'
 import { CustomerCards } from '../components/settings/CustomerCards'
-import Profile from '../components/settings/ProfilePicture'
+import { Account } from '../components/settings/Account'
 import Devices from '../components/settings/Devices'
 import { IncomingCalls } from '../components/settings/IncomingCalls'
 import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
@@ -37,11 +36,15 @@ import { customScrollbarClass } from '../lib/utils'
 import { Voicemail } from '../components/settings/Voicemail'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { isEmpty } from 'lodash'
-import { Setup2FA } from '../components/settings/2fa/Setup2FA'
+import { getPasswordInfo } from '../services/password'
+import { isSsoAuthentication } from '../lib/password'
 import {
   Notifications,
   getAvailableNotificationSettings,
 } from '../components/settings/Notifications'
+
+// sections grouped in the Account page
+const MOVED_TO_ACCOUNT = ['Profile picture', 'Two-Factor Authentication', 'Password']
 
 interface SettingsMenuTypes {
   name: string
@@ -63,6 +66,17 @@ const Settings: NextPage = () => {
   const router = useRouter()
 
   const [currentSection, setCurrentSection] = useState<string>('Devices')
+  const [isPasswordAvailable, setIsPasswordAvailable] = useState(false)
+
+  useEffect(() => {
+    if (isSsoAuthentication()) {
+      return
+    }
+    getPasswordInfo()
+      .then((info) => setIsPasswordAvailable(info?.enabled === true))
+      .catch(() => setIsPasswordAvailable(false))
+  }, [])
+
   const hasNotificationSettings = useMemo(
     () => getAvailableNotificationSettings(profile?.call_summary_enabled === true).length > 0,
     [profile?.call_summary_enabled],
@@ -95,7 +109,7 @@ const Settings: NextPage = () => {
         hidden: !hasNotificationSettings,
       },
       { name: 'Queues', href: '#', icon: faUsers, current: false },
-      { name: 'Profile picture', href: '#', icon: faCircleUser, current: false },
+      { name: 'Account', href: '#', icon: faCircleUser, current: false },
       { name: 'Theme', href: '#', icon: faPalette, current: false },
       {
         name: 'Integrations',
@@ -105,7 +119,6 @@ const Settings: NextPage = () => {
         hidden: !profile?.lkhash,
       },
       { name: 'Cache', href: '#', icon: faDatabase, current: false },
-      { name: 'Two-Factor Authentication', href: '#', icon: faUserShield, current: false },
     ]
 
     // Conditionally add Voicemail section
@@ -139,6 +152,11 @@ const Settings: NextPage = () => {
   }, [settingsMenu, currentSection])
 
   const changeSection = (sectionName: string) => {
+    sectionName = MOVED_TO_ACCOUNT.includes(sectionName) ? 'Account' : sectionName
+    // a stale section in the URL would make a later link to it a no-op
+    if (router.query.section && router.query.section !== sectionName) {
+      router.replace('/settings', undefined, { shallow: true })
+    }
     setCurrentSection(sectionName)
     savePreference('settingsSelectedPage', sectionName, authStore.username)
   }
@@ -147,7 +165,7 @@ const Settings: NextPage = () => {
   useEffect(() => {
     const storedSection = getSelectedSettingsPage(authStore.username)
     if (storedSection.selectedSettingsPage) {
-      setCurrentSection(storedSection.selectedSettingsPage)
+      changeSection(storedSection.selectedSettingsPage)
     }
   }, [authStore.username])
 
@@ -178,14 +196,12 @@ const Settings: NextPage = () => {
         return <IncomingCalls />
       case 'Notifications':
         return <Notifications />
-      case 'Profile picture':
-        return <Profile />
+      case 'Account':
+        return <Account isPasswordAvailable={isPasswordAvailable} />
       case 'Devices':
         return <Devices />
       case 'Voicemail':
         return !isEmpty(profile?.endpoints?.voicemail) ? <Voicemail /> : null
-      case 'Two-Factor Authentication':
-        return <Setup2FA />
       default:
         return <Devices />
     }
