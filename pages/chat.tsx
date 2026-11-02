@@ -152,6 +152,12 @@ const Chat: NextPage = () => {
               >
                 {mark(c.name, q)}
               </span>
+              {c.guests && (
+                // Open to people outside the PBX: the island's badge.
+                <span className='shrink-0 whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs leading-4 font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-700 dark:text-indigo-100'>
+                  {t('Chat.External chat')}
+                </span>
+              )}
               {c.muted && (
                 <FontAwesomeIcon
                   icon={faBellSlash}

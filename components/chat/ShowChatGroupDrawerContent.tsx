@@ -84,7 +84,7 @@ export const ShowChatGroupDrawerContent = forwardRef<
                   <div className='min-w-0 flex-1 font-medium text-gray-900 dark:text-gray-100 truncate'>
                     {guest || t('Chat.External')}
                   </div>
-                  <span className='shrink-0 rounded px-1.5 text-[0.625rem] leading-4 font-semibold uppercase tracking-wide bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-200'>
+                  <span className='shrink-0 rounded-full px-2.5 py-0.5 text-xs leading-4 font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-700 dark:text-indigo-100'>
                     {t('Chat.External')}
                   </span>
                 </li>

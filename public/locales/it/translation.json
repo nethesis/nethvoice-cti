@@ -1381,6 +1381,7 @@
     "Messages count": "{{count}} nuovi messaggi",
     "Reply": "Rispondi",
     "{{count}} matches": "{{count}} risultati",
-    "External": "Esterno"
+    "External": "Esterno",
+    "External chat": "Esterna"
   }
 }
