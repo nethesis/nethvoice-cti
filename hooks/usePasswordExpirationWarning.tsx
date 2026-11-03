@@ -17,9 +17,10 @@ import { loadPreference, savePreference } from '../lib/storage'
 import { store } from '../store'
 
 const warningPreferenceKey = 'password-expiration-warning-date'
-// the middleware reads the info in background after the login
+// the middleware reads the info in background after the login: on a slow
+// user portal it can take a while
 const retryDelay = 5000
-const maxAttempts = 4
+const maxAttempts = 24
 // long sessions: check again, the warning is shown once a day anyway
 const checkInterval = 1000 * 60 * 60
 
@@ -51,7 +52,8 @@ export const usePasswordExpirationWarning = (username: string) => {
       if (cancelled || !info?.enabled) {
         return
       }
-      if (!info.updated_at) {
+      // the cached info may be stale until the background read is done
+      if (!info.updated_at || info.refreshing) {
         if (attempts < maxAttempts) {
           timer = setTimeout(check, retryDelay)
         }

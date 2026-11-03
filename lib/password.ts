@@ -36,6 +36,20 @@ export const getPasswordDaysLeft = (expiration: string | null) => {
 }
 
 /**
+ * End of the login session, read from the JWT: the session lasts a fixed time
+ * after the login, also when the password expires in the meantime
+ */
+export const getSessionExpiration = (token: string) => {
+  try {
+    const payload = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')
+    const exp = JSON.parse(atob(payload)).exp
+    return typeof exp === 'number' ? new Date(exp * 1000) : null
+  } catch (error) {
+    return null
+  }
+}
+
+/**
  * Title of the warning about a password that is about to expire
  */
 export const getPasswordExpiringTitle = (t: TFunction, daysLeft: number) => {

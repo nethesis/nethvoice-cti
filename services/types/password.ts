@@ -28,4 +28,6 @@ export interface PasswordInfo {
   policy: PasswordPolicy | null
   // null until the middleware reads the info after the login
   updated_at: string | null
+  // true while the middleware reads the info again after a login
+  refreshing?: boolean
 }
