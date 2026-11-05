@@ -173,6 +173,8 @@ export const PasswordChangeForm: FC<PasswordChangeFormProps> = ({
     try {
       await onSubmit(current, newPassword)
       setIsSubmitting(false)
+      // the form goes away: a password manager keeps its menu on the focused field
+      ;(document.activeElement as HTMLElement | null)?.blur()
       onSuccess()
     } catch (message: any) {
       setIsSubmitting(false)
