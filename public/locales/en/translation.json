@@ -1403,7 +1403,8 @@
     "Messages count": "{{count}} new messages",
     "Reply": "Reply",
     "{{count}} matches": "{{count}} matches",
-    "External": "External"
+    "External": "External",
+    "External chat": "External"
   },
   "Password": {
     "Change password": "Change password",
