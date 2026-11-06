@@ -39,6 +39,7 @@ import { loginBeforeDashboard } from '../services/user'
 import { otpVerify } from '../services/twoFactor'
 import { OTPInputRef } from '../components/common/OTPInput'
 import { decodeJWT } from '../lib/jwt'
+import { isSsoAuthentication } from '../lib/password'
 import { PasswordChangeForm } from '../components/settings/password/PasswordChangeForm'
 import { changeExpiredPassword } from '../services/password'
 import { PasswordPolicy } from '../services/types/password'
@@ -645,7 +646,7 @@ export default function Login() {
     // SSO mode: with an external authentication method the login page offers
     // an SSO button instead of the password form.
     const ssoConfig: any = (typeof window !== 'undefined' && (window as any).CONFIG) || {}
-    const isSsoMethod = ['saml2', 'oidc'].includes(ssoConfig.AUTHENTICATION_METHOD)
+    const isSsoMethod = isSsoAuthentication(ssoConfig)
     const ssoLoginUrl = isSsoMethod ? ssoConfig.SSO_LOGIN_URL || '/sso' : ''
     const ssoButtonLabel =
       ssoConfig.SSO_BUTTON_LABEL || t('Login.Sign in with SSO')

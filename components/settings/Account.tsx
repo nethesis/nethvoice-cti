@@ -5,20 +5,22 @@ import { FC } from 'react'
 import { ProfilePicture } from './ProfilePicture'
 import { Setup2FA } from './2fa/Setup2FA'
 import { ChangePassword } from './password/ChangePassword'
+import { PasswordInfo } from '../../services/types/password'
 
 interface AccountProps {
-  // the password change needs the account provider user portal
-  isPasswordAvailable: boolean
+  // null when the password cannot be changed here (no account provider
+  // user portal, SSO)
+  passwordInfo: PasswordInfo | null
 }
 
 /**
  * Account settings: profile picture, two-factor authentication and password
  */
-export const Account: FC<AccountProps> = ({ isPasswordAvailable }) => (
+export const Account: FC<AccountProps> = ({ passwordInfo }) => (
   // the last section has no divider
   <div className='flex flex-col gap-8 [&>section:last-of-type]:border-b-0'>
     <ProfilePicture />
     <Setup2FA />
-    {isPasswordAvailable && <ChangePassword />}
+    {passwordInfo && <ChangePassword initialInfo={passwordInfo} />}
   </div>
 )

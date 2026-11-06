@@ -458,7 +458,7 @@
     "Remove picture": "Rimuovi immagine",
     "Picture source": "Origine immagine",
     "Picture": "Immagine",
-    "Picture formats and size": "Formati supportati: JPEG, PNG o WebP. Dimensione massima 500 KB",
+    "Picture formats and size": "Formati supportati: JPEG, PNG, WebP o GIF. Dimensione massima 10 MB",
     "The picture cannot be used, choose another one": "L'immagine non può essere usata, scegline un'altra",
     "e.g. name@example.com": "es. nome@esempio.com",
     "Enter the email address associated with your Gravatar account": "Inserisci l'indirizzo email associato al tuo account Gravatar",

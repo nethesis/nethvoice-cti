@@ -50,8 +50,9 @@ const PRESET_AVATARS = [
   eighthDefaultAvatar,
 ]
 
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
-const MAX_FILE_SIZE = 500 * 1024
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+// the picture is resized and compressed anyway: only refuse huge files
+const MAX_FILE_SIZE = 10 * 1024 * 1024
 // the picture is stored in the user settings: keep it small
 const MAX_STORED_SIZE = 30 * 1024
 const MAX_STORED_DIMENSION = 800

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { TFunction } from 'i18next'
+import { decodeJWT } from './jwt'
 import { PasswordPolicy } from '../services/types/password'
 
 /**
@@ -13,9 +14,9 @@ export const PASSWORD_EXPIRATION_WARNING_DAYS = 7
  * Password management is not available when the login is delegated to an
  * external identity provider
  */
-export const isSsoAuthentication = () => {
-  const config: any = (typeof window !== 'undefined' && (window as any).CONFIG) || {}
-  return ['saml2', 'oidc'].includes(config.AUTHENTICATION_METHOD)
+export const isSsoAuthentication = (config?: any) => {
+  const cfg: any = config || (typeof window !== 'undefined' && (window as any).CONFIG) || {}
+  return ['saml2', 'oidc'].includes(cfg.AUTHENTICATION_METHOD)
 }
 
 /**
@@ -40,13 +41,8 @@ export const getPasswordDaysLeft = (expiration: string | null) => {
  * after the login, also when the password expires in the meantime
  */
 export const getSessionExpiration = (token: string) => {
-  try {
-    const payload = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')
-    const exp = JSON.parse(atob(payload)).exp
-    return typeof exp === 'number' ? new Date(exp * 1000) : null
-  } catch (error) {
-    return null
-  }
+  const exp = token ? decodeJWT(token)?.exp : null
+  return typeof exp === 'number' ? new Date(exp * 1000) : null
 }
 
 /**

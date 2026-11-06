@@ -1,7 +1,7 @@
 // Copyright (C) 2026 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { FC, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -19,9 +19,14 @@ import {
   PASSWORD_EXPIRATION_WARNING_DAYS,
 } from '../../../lib/password'
 
-export const ChangePassword: FC = () => {
+interface ChangePasswordProps {
+  // already read by the settings page, read again after a change
+  initialInfo: PasswordInfo
+}
+
+export const ChangePassword: FC<ChangePasswordProps> = ({ initialInfo }) => {
   const { t } = useTranslation()
-  const [info, setInfo] = useState<PasswordInfo | null>(null)
+  const [info, setInfo] = useState<PasswordInfo | null>(initialInfo)
   const token = useSelector((state: RootState) => state.authentication.token)
 
   const loadInfo = async () => {
@@ -31,10 +36,6 @@ export const ChangePassword: FC = () => {
       console.error('Error loading password info:', error)
     }
   }
-
-  useEffect(() => {
-    loadInfo()
-  }, [])
 
   const openDrawer = () => {
     store.dispatch.sideDrawer.update({
@@ -53,7 +54,10 @@ export const ChangePassword: FC = () => {
       title={
         daysLeft !== null && daysLeft < 0
           ? t('Password.Password expired {{count}} days ago', { count: -daysLeft })
-          : t('Password.Password expired today')
+          : daysLeft === 0
+          ? t('Password.Password expired today')
+          : // forced change by the administrator: the expiration is still ahead
+            t('Password.Your password is expired')
       }
       className='w-full'
     >

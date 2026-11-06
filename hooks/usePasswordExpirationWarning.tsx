@@ -109,6 +109,7 @@ export const usePasswordExpirationWarning = (username: string) => {
     timer = setTimeout(check, retryDelay)
     const interval = setInterval(() => {
       attempts = 0
+      clearTimeout(timer)
       check()
     }, checkInterval)
 

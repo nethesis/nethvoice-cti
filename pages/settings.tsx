@@ -37,6 +37,7 @@ import { Voicemail } from '../components/settings/Voicemail'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { isEmpty } from 'lodash'
 import { getPasswordInfo } from '../services/password'
+import { PasswordInfo } from '../services/types/password'
 import { isSsoAuthentication } from '../lib/password'
 import {
   Notifications,
@@ -66,15 +67,17 @@ const Settings: NextPage = () => {
   const router = useRouter()
 
   const [currentSection, setCurrentSection] = useState<string>('Devices')
-  const [isPasswordAvailable, setIsPasswordAvailable] = useState(false)
+  // read once here: the Account page shows it too
+  const [passwordInfo, setPasswordInfo] = useState<PasswordInfo | null>(null)
+  const isPasswordAvailable = passwordInfo?.enabled === true
 
   useEffect(() => {
     if (isSsoAuthentication()) {
       return
     }
     getPasswordInfo()
-      .then((info) => setIsPasswordAvailable(info?.enabled === true))
-      .catch(() => setIsPasswordAvailable(false))
+      .then((info) => setPasswordInfo(info || null))
+      .catch(() => setPasswordInfo(null))
   }, [])
 
   const hasNotificationSettings = useMemo(
@@ -197,7 +200,7 @@ const Settings: NextPage = () => {
       case 'Notifications':
         return <Notifications />
       case 'Account':
-        return <Account isPasswordAvailable={isPasswordAvailable} />
+        return <Account passwordInfo={isPasswordAvailable ? passwordInfo : null} />
       case 'Devices':
         return <Devices />
       case 'Voicemail':
