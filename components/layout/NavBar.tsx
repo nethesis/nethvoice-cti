@@ -112,9 +112,8 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
                     />
                   )}
                   {item.name === 'Messages' && chatUnread > 0 && (
-                    <span className='absolute top-1 right-1 min-w-[1.125rem] h-[1.125rem] px-1 rounded-full bg-red-600 text-white text-[0.65rem] font-semibold flex items-center justify-center'>
-                      {chatUnread > 99 ? '99+' : chatUnread}
-                    </span>
+                    // A dot, as on the chat heads: the count soon outgrows the badge.
+                    <span className='absolute top-2 right-2 w-3 h-3 rounded-full bg-red-700 dark:bg-red-500' />
                   )}
                 </div>
               </Link>
