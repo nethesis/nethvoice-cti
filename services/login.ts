@@ -54,7 +54,18 @@ const getSsoLogoutUrl = () => {
   return ''
 }
 
+/** The chat stops web push for this browser while the session still works; the reload below would cut it short. */
+const leaveChat = () =>
+  new Promise<void>((resolve) => {
+    if (String((window as any).CONFIG?.CHAT_ENABLED) !== 'true') return resolve()
+    const done = (): void => (window.removeEventListener('chat-island-logged-out', done), resolve())
+    window.addEventListener('chat-island-logged-out', done)
+    setTimeout(done, 2000)
+    window.dispatchEvent(new CustomEvent('chat-island-logout'))
+  })
+
 export const doLogout = async (isLogoutError?: any) => {
+  await leaveChat()
   const res = await logout()
   //// TODO logout API is currently authenticated. For this reason, we must not check res.ok (this is a temporary workaround)
 
