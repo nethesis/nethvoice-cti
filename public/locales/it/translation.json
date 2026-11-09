@@ -1439,6 +1439,8 @@
     "Change it now to keep using the application": "Cambiala ora per continuare a usare l'applicazione.",
     "Your password expires today": "La tua password scade oggi",
     "Your password expires in {{count}} days_one": "La tua password scade tra {{count}} giorno",
-    "Your password expires in {{count}} days_other": "La tua password scade tra {{count}} giorni"
+    "Your password expires in {{count}} days_other": "La tua password scade tra {{count}} giorni",
+    "Your password is no longer expired": "La password non è più scaduta: accedi con la password attuale.",
+    "Password change is not available right now": "Il cambio password non è disponibile al momento. Riprova più tardi."
   }
 }

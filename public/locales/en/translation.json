@@ -1444,6 +1444,8 @@
     "Change it now to keep using the application": "Change it now to keep using the application.",
     "Your password expires today": "Your password expires today",
     "Your password expires in {{count}} days_one": "Your password expires in {{count}} day",
-    "Your password expires in {{count}} days_other": "Your password expires in {{count}} days"
+    "Your password expires in {{count}} days_other": "Your password expires in {{count}} days",
+    "Your password is no longer expired": "Your password is no longer expired: sign in with your current password.",
+    "Password change is not available right now": "Password change is not available right now. Try again later."
   }
 }
