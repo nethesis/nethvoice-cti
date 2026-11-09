@@ -26,7 +26,7 @@ export const groupLook = (peer: string, name: string) => ({
     ? 'bg-surfaceBadgeBlueNethLink text-textBadgeBlueNethLink dark:bg-surfaceBadgeBlueNethLinkDark dark:text-textBadgeBlueNethLinkDark'
     : name.startsWith(QUEUE_PREFIX)
       ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-700 dark:text-indigo-100'
-      : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-100',
+      : 'bg-gray-700 text-white dark:bg-gray-200 dark:text-gray-950',
 })
 
 /** Two letters for a group, as the island's chat heads: a one-word name's first two, else the first two words' initials. */
