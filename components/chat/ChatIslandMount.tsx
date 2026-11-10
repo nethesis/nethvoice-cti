@@ -101,7 +101,6 @@ export function ChatIslandMount() {
         maxHeads={5}
         notifications='auto'
         pinnable
-        operatorIcon
         moveTo={nethlink ? MOVE_TO_NETHLINK : undefined}
       />
       {!inNethlink && (
